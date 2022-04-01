@@ -17,9 +17,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-all_files = glob.glob(os.path.join('', r"./tennis_wta/*.csv"))
+all_files = glob.glob(os.path.join('', r"./tennis_atp/*.csv"))
 # This is where you adjust the scope of files
-all_files = [file for file in all_files if 'wta_matches_20' in file]
+all_files = [file for file in all_files if 'atp_matches_20' in file]
 df_from_each_file = (pd.read_csv(f, encoding='latin-1', low_memory=False) for f in all_files)
 wta_matches = pd.concat(df_from_each_file, ignore_index=True)
 
@@ -84,7 +84,7 @@ match_pred = match_pred.dropna()
 
 # create model building
 array = match_pred.values
-X = array[:, 2:6]  # the features
+X = array[:, 3:6]  # the features
 Y = array[:, 6]  # the desired outcome
 
 X_train, X_validation, Y_train, Y_validation = train_test_split(X, Y, test_size=0.20, random_state=1)
@@ -113,11 +113,11 @@ model = GaussianNB()
 model.fit(X_train, Y_train)
 
 #  model testing
-# age rank h2h win_pct
-player_1_pred = model.predict_proba([[25, 73, 0, 67.0]])
+# rank h2h win_pct
+player_1_pred = model.predict_proba([[73, 0, 67.0]])
 player_1_win_prob = player_1_pred[0, 1]
 
-player_2_pred = model.predict_proba([[27, 92, 0, 58.9]])
+player_2_pred = model.predict_proba([[92, 0, 58.9]])
 player_2_win_prob = player_2_pred[0, 1]
 
 if player_1_win_prob > player_2_win_prob:
